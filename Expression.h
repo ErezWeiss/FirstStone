@@ -1,0 +1,15 @@
+//
+// Created by erez on 12/18/18.
+//
+
+#ifndef FIRSTSTONE_EXPRESSION_H
+#define FIRSTSTONE_EXPRESSION_H
+
+
+class Expression {
+public:
+    virtual double calculate() const = 0;
+};
+
+
+#endif //FIRSTSTONE_EXPRESSION_H
