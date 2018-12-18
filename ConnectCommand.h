@@ -8,8 +8,8 @@
 
 #include "Command.h"
 
-class ConnectCommand : Command{
-
+class ConnectCommand : public Command{
+    int execute(vector<string> &str, int index) override;
 };
 
 

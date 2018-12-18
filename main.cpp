@@ -1,12 +1,12 @@
 #include <iostream>
 #include "Number.h"
 #include "Div.h"
+#include "Lexer.h"
 
-int main() {
-    Number* one = new Number(1);
-    Number* two = new Number(2);
-    Div* plus = new Div(one,two);
-    std::cout << one->calculate() << "\n";
-    std::cout << two->calculate() << "\n";
-    std::cout << plus->calculate() << "\n";
+int main(int argc, char* argv[]) {
+    string file = argv[1];
+    Lexer *lexer = new Lexer(file);
+    vector<string> commands = lexer->getStringVector();
+    cout << "hi";
+
 }

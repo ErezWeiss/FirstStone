@@ -8,8 +8,8 @@
 
 #include "Command.h"
 
-class OpenServerCommand : Command {
-
+class OpenServerCommand : public Command {
+    int execute(vector<string> &str, int index) override;
 };
 
 
