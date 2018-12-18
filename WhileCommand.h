@@ -9,7 +9,7 @@
 #include "ConditionParser.h"
 
 class WhileCommand : ConditionParser {
-
+// some details
 };
 
 
