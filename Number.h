@@ -15,6 +15,7 @@ private:
 public:
     Number(double num);
     double calculate() const;
+    // note
 };
 
 

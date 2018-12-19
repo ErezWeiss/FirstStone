@@ -4,9 +4,9 @@
 
 #include "CommandExpression.h"
 
-CommandExpression::CommandExpression(double cmd){
+CommandExpression::CommandExpression(Command* cmd){
     this->cmd = cmd;
 }
 double CommandExpression::calculate() const{
-    return cmd.execute();
+    return cmd->execute(); // hey brother
 }

@@ -9,11 +9,11 @@
 #include "Expression.h"
 #include "Command.h"
 
-class CommandExpression : Expression{
+class CommandExpression : public Expression{
 private:
     Command* cmd;
 public:
-    CommandExpression(Command cmd); //CTOR
+    CommandExpression(Command* cmd); //CTOR
     double calculate() const;
 };
 

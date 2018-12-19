@@ -8,8 +8,8 @@
 
 #include "ConditionParser.h"
 
-class WhileCommand : ConditionParser {
-
+class WhileCommand : public ConditionParser {
+// some details
 };
 
 

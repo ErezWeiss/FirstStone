@@ -3,3 +3,7 @@
 //
 
 #include "ConnectCommand.h"
+
+int ConnectCommand::execute(vector<string> &str, int index) {
+    return 0;
+}

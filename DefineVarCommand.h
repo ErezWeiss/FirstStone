@@ -8,8 +8,8 @@
 
 #include "Command.h"
 
-class DefineVarCommand : Command {
-
+class DefineVarCommand : public Command {
+    int execute(vector<string> &str, int index) override;
 };
 
 
