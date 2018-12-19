@@ -11,7 +11,7 @@
 
 class CommandExpression : Expression{
 private:
-    Command cmd;
+    Command* cmd;
 public:
     CommandExpression(Command cmd); //CTOR
     double calculate() const;
