@@ -13,7 +13,7 @@ Parser::Parser(vector<string> &strings){
     this->strings = strings;
 
 }
-
+//hey bro
 void Parser::setTheTables(){
     this->expressionMap.insert(pair<string,Expression*>("openDataServer", new CommandExpression(new OpenServerCommand));
     this->expressionMap.insert(pair<string,Expression*>("connect", new CommandExpression(new ConnectCommand));
