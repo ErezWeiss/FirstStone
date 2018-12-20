@@ -15,7 +15,7 @@ void ConnectCommand::setIp_address(const string &ip_address) {
     ConnectCommand::ip_address = ip_address;
 }
 
-int ConnectCommand::execute(vector<string> str) {
+int ConnectCommand::calculate(vector<string> str) {
     Shunting* shunting=new Shunting();
     this->ip_address=str[1];
     this->ip_address=shunting->createExpression(str[2])->calculate();

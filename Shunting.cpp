@@ -42,7 +42,16 @@ Expression *Shunting::applyOp(Expression *val1, Expression *val2, char operation
             break;
     }
 }
-
+bool *Shunting::isParam(string tokens) {
+    map<string, int>::iterator it;
+    fot(it=this->symbolTableNameDouble.begin();it!=this->symbolTableNameDouble.end;++it)
+    {
+        if(it->first==tokens) {
+            return true;
+        }
+    }
+    return false;
+}
 // Function that returns value of
 // expression after evaluation.
 Expression *Shunting::createExpression(string tokens) {
@@ -74,6 +83,11 @@ Expression *Shunting::createExpression(string tokens) {
             }
             i--;
             Expression *num = new Number(val);
+            value.push(num);
+        }
+        //ניסיון להמיר משתנים לערכם
+        else if (isParam(tokens[i])) {
+            Expression *num = new Number((symbolTableNameDouble[tokens[i]]));
             value.push(num);
         }
             // Closing brace encountered, solve

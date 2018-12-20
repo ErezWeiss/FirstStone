@@ -20,6 +20,7 @@ class Shunting {
 public:
     Shunting();
     void initializeMap();
+    bool isParam(string tokens);
     int precedence(char operation);
     Expression *createExpression(string tokens);
     Expression* applyOp(Expression* val1, Expression* val2, char operation);

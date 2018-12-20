@@ -2,14 +2,14 @@
 // Created by erez on 12/18/18.
 //
 
+
+#include "Command.h"
 #ifndef FIRSTSTONE_OPENSERVERCOMMAND_H
 #define FIRSTSTONE_OPENSERVERCOMMAND_H
 
 
-#include "Command.h"
-
 class OpenServerCommand : public Command {
-    int execute(vector<string> str) override;
+    int calculate(vector<string> str) override;
 };
 
 

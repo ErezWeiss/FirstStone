@@ -12,7 +12,7 @@ using namespace std;
 
 class Command {
 public:
-    virtual int execute(vector<string> str) = 0;
+    virtual int calculate(vector<string> str) = 0;
 };
 
 

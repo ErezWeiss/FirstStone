@@ -6,9 +6,12 @@
 #define FIRSTSTONE_SLEEPCOMMAND_H
 
 
-class SleepCommand {
+#include "Command.h"
 
+class SleepCommand : public Command {
+public:
+    SleepCommand();
+    int calculate(vector<string> str) override;
 };
-
 
 #endif //FIRSTSTONE_SLEEPCOMMAND_H

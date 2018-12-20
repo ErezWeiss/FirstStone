@@ -13,14 +13,24 @@ using namespace std;
 class Parser {
 private:
     map<string, Expression*> expressionMap;
-    map<string, double> symbolTablePathDouble;
-    map<string, string> symbolTableNamePath;
-    map<string, double> symbolTableNameDouble;
+    map<string, double> symbolTablePathDouble;  // updated from game by thread
+    map<string, string> symbolTableNamePath;    // for bind
+    map<string, double> symbolTableNameDouble;  // for us. for the bosses
     vector<string> strings;
 
 public:
     Parser(vector<string> &strings);
     void setTheTables();
+    void startInterpret();
+    vector<string> ODSInterpret(string line);
+    vector<string> ConnectInterpret(string line);
+    vector<string> VarInterpret(string line);
+    vector<string> SleepInterpret(string line);
+    vector<string> PrintInterpret(string line);
+    vector<string> IfWhileInterpret(vector<string> lines);
+    vector<string> IfInterpret(vector<string> lines);
+    vector<string> EqualInterpret(string line);
+
 };
 
 

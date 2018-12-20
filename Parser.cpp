@@ -1,13 +1,13 @@
-}    //
+//
 // Created by erez on 12/18/18.
 //
 
+#include <regex>
 #include "Parser.h"
 #include "OpenServerCommand.h"
 #include "CommandExpression.h"
 #include "ConnectCommand.h"
 #include "DefineVarCommand.h"
-#include "WhileCommand.h"
 
 Parser::Parser(vector<string> &strings){
     this->strings = strings;
@@ -46,32 +46,7 @@ void Parser::setTheTables(){
     this->symbolTablePathDouble.insert(pair<string,double>("/controls/flight/elevator", 0));
 }
 
-
-void Parser::startInterpret() {
-    string bufferedLine;
-    for (auto it = strings.begin(); it != strings.end(); ++it) {
-        bufferedLine = *it;
-        string firstWord = bufferedLine.substr(0, bufferedLine.find(" "));
-        switch (firstWord) {
-            case "openDataServer":
-                vector<string> returnStringVector = ODSInterpret(*it);
-            case "connect":
-                vector<string> returnStringVector = ConnectInterpret(*it);
-                // parsethetext(returnStringVector);
-            case "var":
-                VarInterpret(*it);
-            case while:
-                // put attention! increase the t to be the end of the '}' note
-            case "print":
-                PrintInterpret(*it);
-            case "sleep":
-                SleepInterpret(*it);
-            default:
-                EqualInterpret(*it)
-        }
-    }
-}
-
+/////////////////////////////////////////////ODSInterpret/////////////////////////////////////////////////////
 vector<string> Parser::ODSInterpret(string line) {
     vector<string> returnStringVector;
     string firstWord = line.substr(0, line.find(" "));
@@ -91,7 +66,7 @@ vector<string> Parser::ODSInterpret(string line) {
     returnStringVector.push_back(line);
     return returnStringVector;
 }
-
+/////////////////////////////////////////////ConnectInterpret/////////////////////////////////////////////////////
 vector<string> Parser::ConnectInterpret(string line){
     vector<string> returnStringVector;
     string firstWord = line.substr(0, line.find(" "));
@@ -102,20 +77,151 @@ vector<string> Parser::ConnectInterpret(string line){
     returnStringVector.push_back(line);                                     // push the port
     return returnStringVector;
 }
-vector<string> Parser::SleepInterpret(string line){}
-vector<string> Parser::whileInterpret(string line){}
-vector<string> Parser::IfInterpret(string line){}
-vector<string> Parser::VarInterpret(string line){}
-vector<string> Parser::EqualInterpret(string line){}
-vector<string> Parser::PrintInterpret(string line){}
+/////////////////////////////////////////////VarInterpret/////////////////////////////////////////////////////
+vector<string> Parser::VarInterpret(string line){
+    vector<string> returnStringVector;
+    string firstWord = line.substr(0, line.find(' '));
+    returnStringVector.push_back(firstWord);								// push the first word into the vector
+    line.erase(0, line.find(' ') + 1);                                      // erase the first word
+
+    string varName = line.substr(0, line.find('='));
+    // erase possible space
+    if (varName[varName.length()-1]==' '){
+        varName = varName.erase(varName.length()-1, varName.length());
+    }
+    returnStringVector.push_back(varName);								// push the varName into the vector
+    line.erase(0, line.find('=') + 1);                                      // erase the varName
+
+    // erase possible space
+    if (line[0]==' '){
+        line = line.erase(0, 1);
+    }
+
+    // looking for "bind"
+    std::size_t found = line.find("bind");
+    if (found!=std::string::npos){ // if found!!
+        returnStringVector.push_back("bind");                   // push "bind"
+        line.erase(0, line.find(' ') + 1);
+        returnStringVector.push_back(line);
+    } else {
+        returnStringVector.push_back(line);
+    }
+    return returnStringVector;
+}
+/////////////////////////////////////////////SleepInterpret/////////////////////////////////////////////////////
+vector<string> Parser::SleepInterpret(string line){
+    vector<string> returnStringVector;
+    string firstWord = line.substr(0, line.find(' '));
+    returnStringVector.push_back(firstWord);								// push the first word into the vector
+    line.erase(0, line.find(' ') + 1);                                      // erase the first word
+    returnStringVector.push_back(line);
+    return returnStringVector;
+}
+/////////////////////////////////////////////PrintInterpret/////////////////////////////////////////////////////
+vector<string> Parser::PrintInterpret(string line){
+    vector<string> returnStringVector;
+    string firstWord = line.substr(0, line.find(' '));
+    returnStringVector.push_back(firstWord);								// push the first word into the vector
+    line.erase(0, line.find(' ') + 1);                                      // erase the first word
+    returnStringVector.push_back(line);
+    return returnStringVector;
+}
+/////////////////////////////////////////////WhileInterpret/////////////////////////////////////////////////////
+
+vector<string> Parser::IfWhileInterpret(vector<string> lines){
+    string firstLine = lines[0];
+    vector<string> returnStringVector;
+    string firstWord = firstLine.substr(0, firstLine.find(' '));
+    returnStringVector.push_back(firstWord);								// push the first word into the vector
+    firstLine.erase(0, firstLine.find(' ') + 1);                                      // erase the first word
+    regex b("[<>]=?|==");
+    smatch m;
+    regex_search (firstLine, m, b);                                         // find the > < >= ....etc....
+    string leftCond = firstLine.substr(0,m.position(0));
+    if (leftCond[leftCond.length()-1]==' '){
+        leftCond = leftCond.substr(0,leftCond.length()-1);
+    }
+    returnStringVector.push_back(leftCond);                         // push left condition
+    returnStringVector.push_back(m[0]);                            // push the operator
+    string rightCond = firstLine.substr(m.position(0)+1, firstLine.length());
+    if (rightCond[rightCond.length()-1]=='{'){
+        rightCond = rightCond.substr(0,rightCond.length()-1);
+    }
+    returnStringVector.push_back(rightCond);                        // push right condition
+    for (auto it = strings.begin()+1; it != strings.end(); ++it){
+        returnStringVector.push_back(*it);                          // push all the commands in the line...
+    }
+    unsigned long length = returnStringVector.size();               // erase the "}"
+    if (returnStringVector[length-1]=="}") {
+        returnStringVector.erase(returnStringVector.end()-1);
+    } else {
+        string lastLine = *(returnStringVector.end()-1);
+        lastLine = lastLine.substr(0, lastLine.length()-1);
+        returnStringVector.erase(returnStringVector.end()-1);
+        returnStringVector.push_back(lastLine);
+    }
+    return returnStringVector;
+}
+
+
+
+/////////////////////////////////////////////EqualInterpret/////////////////////////////////////////////////////
+vector<string> Parser::EqualInterpret(string line){
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////START INTERPRET/////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void Parser::startInterpret() {
+    string bufferedLine;
+    vector<string> returnStringVector;
+    for (auto it = strings.begin(); it != strings.end(); ++it) {
+        bufferedLine = *it;
+        string firstWord = bufferedLine.substr(0, bufferedLine.find(" "));
+
+        if(firstWord=="openDataServer") {
+            returnStringVector = ODSInterpret(*it);
+        } else if(firstWord=="connect") {
+            returnStringVector = ConnectInterpret(*it);
+        } else if (firstWord=="var") {
+            returnStringVector = VarInterpret(*it);
+        }
+
+        else if (firstWord=="while") {
+            vector<string> lines;
+            while (bufferedLine.find('}')==std::string::npos){  // while the line doesn't contains '}'
+                lines.push_back(bufferedLine);
+                it++;
+                bufferedLine = *it;
+            }
+            lines.push_back(bufferedLine);
+            returnStringVector = IfWhileInterpret(lines);
+        }
+
+        else if (firstWord=="if") {
+            // some det
+        } else if (firstWord=="print") {
+            returnStringVector = PrintInterpret(*it);
+        } else if (firstWord=="sleep") {
+            returnStringVector = SleepInterpret(*it);
+        } else {
+            EqualInterpret(*it);
+        }
+    }
+}
+
+
+
 
 
 void Parser::parserTheText(vector<string> strings){
     string str;
     str = strings[0];
-    if (str=="while"){
-
+    if (str=="var"){
+        expressionMap[str]->calculate(strings,symbolTableNamePath,symbolTablePathDouble, symbolTableNameDouble);
     } else {
-        expressionMap[str].execute(strings);
+        expressionMap[str]->calculate(strings);
     }
 }
