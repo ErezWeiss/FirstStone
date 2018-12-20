@@ -8,7 +8,7 @@
 
 #include "BinaryExpression.h"
 
-class Div : BinaryExpression{
+class Div : public BinaryExpression{
 public:
     Div(Expression* left, Expression* right) : BinaryExpression(left, right){
 

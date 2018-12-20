@@ -7,9 +7,19 @@
 
 
 #include "Command.h"
-
+#include "Shunting.h"
 class ConnectCommand : public Command{
-    int execute(vector<string> &str, int index) override;
+    string ip_address;
+    double port;
+public:
+
+    ConnectCommand();
+
+    int execute(vector<string> str) override;
+
+    const string &getIp_address() const;
+
+    void setIp_address(const string &ip_address);
 };
 
 

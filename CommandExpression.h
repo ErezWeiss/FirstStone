@@ -14,6 +14,7 @@ private:
     Command* cmd;
 public:
     CommandExpression(Command* cmd); //CTOR
+    double calculate(vector<string> str) const;
     double calculate() const;
 };
 

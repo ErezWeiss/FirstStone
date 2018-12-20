@@ -5,9 +5,8 @@
 #ifndef FIRSTSTONE_DEFINEVARCOMMAND_H
 #define FIRSTSTONE_DEFINEVARCOMMAND_H
 
-
 #include "Command.h"
-
+#include "Shunting.h"
 class DefineVarCommand : public Command {
     int execute(vector<string> &str, int index) override;
 };

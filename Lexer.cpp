@@ -12,9 +12,9 @@ Lexer::Lexer(string &file){
 void Lexer::lexTheStringIntoVector(){
     ifstream file(this->file.c_str());
     if(file.is_open()) {
-        string word;
-        while (file >> word) {
-            this->strings.push_back(word);
+        string line;
+        for (line; getline(file, line);) {
+            this->strings.push_back(line);
         }
     } else {
         throw "open file error!";
