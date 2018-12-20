@@ -1,5 +1,5 @@
 //
-// Created by user on 12/19/2018.
+// Created by erez on 12/20/18.
 //
 
 #ifndef FIRSTSTONE_EQUALCOMMAND_H

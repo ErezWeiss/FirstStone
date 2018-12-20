@@ -1,13 +1,15 @@
-//
-// Created by erez on 12/18/18.
-//
+
+Created by erez on 12/18/18.
+
 
 #include <vector>
 #include "OpenServerCommand.h"
+#include "Shunting.h"
 
-int OpenServerCommand::execute(vector<string> &str, int index) {
-    int portForListen = stoi(str[index+1]);
-    int UpdatesPerSecond = stoi(str[index+2]);
+int OpenServerCommand::execute(vector<string> str) {
+    Shunting shunting=Shunting();
+    int portForListen = shunting.createExpression(str[1])->calculate();
+    int UpdatesPerSecond = shunting.createExpression(str[2])->calculate();
 
     return 3;
 }

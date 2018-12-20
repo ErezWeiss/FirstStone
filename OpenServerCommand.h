@@ -9,7 +9,7 @@
 #include "Command.h"
 
 class OpenServerCommand : public Command {
-    int execute(vector<string> &str, int index) override;
+    int execute(vector<string> str) override;
 };
 
 
