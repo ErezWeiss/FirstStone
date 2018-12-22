@@ -7,16 +7,15 @@
 #include <map>
 #include <vector>
 #include "Expression.h"
+#include "PlaneData.h"
 
 using namespace std;
 
 class Parser {
 private:
     map<string, Expression*> expressionMap;
-    map<string, double> symbolTablePathDouble;  // updated from game by thread
-    map<string, string> symbolTableNamePath;    // for bind
-    map<string, double> symbolTableNameDouble;  // for us. for the bosses
     vector<string> strings;
+    PlaneData* planeData;
 
 public:
     Parser(vector<string> &strings);

@@ -7,12 +7,13 @@
 
 #include <string>
 #include <vector>
+#include "PlaneData.h"
 
 using namespace std;
 
 class Command {
 public:
-    virtual int calculate(vector<string> str) = 0;
+    virtual int execute(vector<string> str, PlaneData *planeData) = 0;
 };
 
 

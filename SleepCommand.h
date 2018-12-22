@@ -11,7 +11,7 @@
 class SleepCommand : public Command {
 public:
     SleepCommand();
-    int calculate(vector<string> str) override;
+    int execute(vector<string> str) override;
 };
 
 #endif //FIRSTSTONE_SLEEPCOMMAND_H

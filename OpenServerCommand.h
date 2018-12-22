@@ -3,13 +3,14 @@
 //
 
 
-#include "Command.h"
 #ifndef FIRSTSTONE_OPENSERVERCOMMAND_H
 #define FIRSTSTONE_OPENSERVERCOMMAND_H
+#include "Command.h"
 
 
 class OpenServerCommand : public Command {
-    int calculate(vector<string> str) override;
+public:
+    int execute(vector<string> str, PlaneData *planeData);
 };
 
 
