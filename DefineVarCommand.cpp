@@ -5,11 +5,11 @@
 #include "DefineVarCommand.h"
 
 int DefineVarCommand::execute() {
-    if (params[2]=="bind"){
-//        symbolTableNamePath.insert(str[1],str[3]);
+    if (this->params[2]=="bind"){
+        this->planeData->getSymbolTableNamePath().insert(this->params[1],this->params[3]);
     } else{
         Shunting shunting = Shunting(this->planeData);
-        Expression * expression = shunting.createExpression(params[2]);
-//        symbolTableNameDouble.insert(pair<string,double >(params[2],expression->calculate()));
+        Expression * expression = shunting.createExpression(this->params[2]);
+        this->planeData->getSymbolTableNameDouble().insert(pair<string,double >(this->params[2],expression->calculate()));
     }
 }

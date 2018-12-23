@@ -28,6 +28,17 @@ public:
     double getValueByName(string st);
     void ReadFromPlane(string info);
     void UpdateTheTable(vector<double> vector);
+    double getValueByName(string st);
+    map<string, double> getsymbolTablePathDouble(){
+        return this->symbolTablePathDouble;
+    }
+    map<string, string> getSymbolTableNamePath(){
+        return this->symbolTableNamePath;
+    }
+    map<string, double> getSymbolTableNameDouble(){
+        return this->symbolTableNameDouble;
+    }
+
 };
 
 

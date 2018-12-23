@@ -5,11 +5,11 @@
 #include "EqualCommand.h"
 
 int EqualCommand::execute() {
-    if (params[1]=="bind"){
-//        symbolTableNamePath.insert(str[0],str[2]);
+    if (this->params[1]=="bind"){
+        this->planeData->getSymbolTableNamePath().insert(this->params[0],this->params[2]);
     } else{
-        Shunting shunting = Shunting(this->planeData);
-        Expression * expression = shunting.createExpression(params[1]);
-//        symbolTableNameDouble.insert(pair<string,double >(str[1],expression->calculate()));
+        Shunting shunting(this->planeData) ;
+        Expression * expression = shunting.createExpression(this->params[1]);
+        this->planeData->getSymbolTableNameDouble().insert(pair<string,double >(this->params[1],expression->calculate()));
     }
 }
