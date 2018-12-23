@@ -11,15 +11,8 @@ PlaneData::PlaneData() {
 }
 
 double PlaneData::getValueByName(string str){
-    map<string, int>::iterator it;
-    fot(it= this->symbolTableNameDouble.begin();it!=this->symbolTableNameDouble.end;++it)
-    {
-        if(it->first==str) {
-            it->second;
-        }
-    }
+    return this->symbolTableNameDouble.find(str)->second;
     //should throw exception here couse there is no value for that parameter
-    return 0;
 }
 
 void PlaneData::ReadFromPlane(string info){

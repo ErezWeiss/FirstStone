@@ -5,6 +5,7 @@
 #ifndef FIRSTSTONE_PRINTCOMMAND_H
 #define FIRSTSTONE_PRINTCOMMAND_H
 
+#include "Command.h"
 
 class PrintCommand : public Command {
     int execute();

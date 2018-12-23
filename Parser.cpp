@@ -39,7 +39,7 @@ void Parser::setTheTables(){
     sleepCommand->setPlaneData(this->planeData);
     this->expressionMap.insert(pair<string,CommandExpression*>("sleep", new CommandExpression(sleepCommand)));
     PrintCommand* printCommand= new PrintCommand();
-    printCommand.setPlaneData(this->planeData);
+    printCommand->setPlaneData(this->planeData);
     this->expressionMap.insert(pair<string,CommandExpression*>("print", new CommandExpression(printCommand)));
 }
 

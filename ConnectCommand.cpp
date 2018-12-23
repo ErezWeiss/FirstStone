@@ -16,9 +16,9 @@ void ConnectCommand::setIp_address(const string &ip_address) {
 }
 
 int ConnectCommand::execute() {
-    Shunting* shunting=new Shunting();
-    this->ip_address=str[1];        //..................
-    this->ip_address=shunting->createExpression(str[2])->calculate();
+    Shunting* shunting=new Shunting(this->planeData);
+    this->ip_address=params[1];        //..................
+    this->ip_address=shunting->createExpression(params[2])->calculate();
 
 }
 

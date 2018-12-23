@@ -34,12 +34,12 @@ void* thread_func(void* arguments) {
         while(true) {
             ssize_t erez = read(new_socket, buffer, MAX_NUMBER);
             args->planeData->ReadFromPlane(buffer);
-            std::this_thread::sleep_for(args->UpdatesPerSecond / 100);
+            std::this_thread::sleep_for(0.1s);          /// fix the time arg. the second arg...
         }
 }
 
 int OpenServerCommand::execute() {
-    Shunting shunting;
+    Shunting shunting(this->planeData);
     int portForListen = (int)shunting.createExpression(params[1])->calculate();
     int UpdatesPerSecond = (int)shunting.createExpression(params[2])->calculate();
 

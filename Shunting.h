@@ -16,12 +16,14 @@ class Shunting {
                                     {'-',1}, {'+',1},
                                     {'*',2}, {'/',2}
     };
-
+private:
+    PlaneData *planeData;
 public:
-    Shunting();
+    Shunting(PlaneData *planeData);
     void initializeMap();
     bool isParam(string tokens);
     int precedence(char operation);
+    int operationPriority(char operation);
     Expression *createExpression(string tokens);
     Expression* applyOp(Expression* val1, Expression* val2, char operation);
 };

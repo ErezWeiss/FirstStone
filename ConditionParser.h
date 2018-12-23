@@ -15,7 +15,6 @@ private:
     vector<string> str;
     list<Command*> cmds;
 public:
-    ConditionParser();
     bool conditionCheck();
     int execute();
 

@@ -16,6 +16,15 @@ private:
 
 public:
     PlaneData();
+    map<string, string> GetSymbolTableNamePath(){
+        return this->symbolTableNamePath;
+    }
+    map<string, double> GetSymbolTablePathDouble(){
+        return this->symbolTablePathDouble;
+    }
+    map<string, double> GetSymbolTableNameDouble(){
+        return this->symbolTableNameDouble;
+    }
     double getValueByName(string st);
     void ReadFromPlane(string info);
     void UpdateTheTable(vector<double> vector);
