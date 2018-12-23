@@ -16,6 +16,7 @@ private:
 
 public:
     PlaneData();
+    double getValueByName(string st);
     void ReadFromPlane(string info);
     void UpdateTheTable(vector<double> vector);
 };

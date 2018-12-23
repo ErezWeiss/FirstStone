@@ -1,6 +1,7 @@
 #include <vector>
 #include <netinet/in.h>
 #include <zconf.h>
+#include <thread>
 #include "OpenServerCommand.h"
 #include "Shunting.h"
 #define MAX_NUMBER 300
@@ -33,7 +34,7 @@ void* thread_func(void* arguments) {
         while(true) {
             ssize_t erez = read(new_socket, buffer, MAX_NUMBER);
             args->planeData->ReadFromPlane(buffer);
-//            std::this_thread::sleep_for(2s);                // made some problems...
+            std::this_thread::sleep_for(0.1s);
         }
 }
 
@@ -48,7 +49,7 @@ int OpenServerCommand::execute(vector<string> str, PlaneData *planeData) {
     args.planeData = planeData;
     pthread_t trid;
     pthread_create(&trid, nullptr, thread_func, (void *)&args);
-    (void) pthread_join(trid, NULL);//////////////////////////////////////////option only
+//    (void) pthread_join(trid, NULL);
 }
 
 

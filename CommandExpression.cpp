@@ -7,6 +7,6 @@
 CommandExpression::CommandExpression(Command* cmd){
     this->cmd = cmd;
 }
-double CommandExpression::execute(vector<string> str) const{
+double CommandExpression::calculate(vector<string> str) const{
     return cmd->execute(str); // hey brother
 }

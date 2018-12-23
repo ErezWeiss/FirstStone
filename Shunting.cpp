@@ -7,8 +7,11 @@
 #include "Div.h"
 #include "Minus.h"
 #include "Plus.h"
+#include <bits/stdc++.h>
 
-Shunting::Shunting() {
+
+Shunting::Shunting(PlaneData *planeData) {
+    this->planeData = planeData;
     initializeMap();
 }
 
@@ -28,6 +31,16 @@ int Shunting::precedence(char operation) {
     throw "invalid operation!";
 }
 
+int Shunting::operationPriority(char operation) {
+    if (operation == '*' || operation == '/') {
+        return 2;
+    } else if (operation == '+' || operation == '-') {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
 Expression *Shunting::applyOp(Expression *val1, Expression *val2, char operation) {
     switch (operation) {
         case '*':
@@ -42,22 +55,23 @@ Expression *Shunting::applyOp(Expression *val1, Expression *val2, char operation
             break;
     }
 }
-bool *Shunting::isParam(string tokens) {
-    map<string, int>::iterator it;
-    fot(it=this->symbolTableNameDouble.begin();it!=this->symbolTableNameDouble.end;++it)
-    {
-        if(it->first==tokens) {
-            return true;
-        }
-    }
-    return false;
-}
+
+//bool *Shunting::isParam(string tokens) {
+//    map<string, int>::iterator it;
+//    fot(it=this->symbolTableNameDouble.begin();it!=this->symbolTableNameDouble.end;++it)
+//    {
+//        if(it->first==tokens) {
+//            return true;
+//        }
+//    }
+//    return false;
+//}
 // Function that returns value of
 // expression after evaluation.
 Expression *Shunting::createExpression(string tokens) {
     //int i;
     // stack to store integer values.
-    stack<Expression*> value;
+    stack<Expression *> value;
     // stack to store operators.
     stack<char> operators;
     for (int i = 0; i < tokens.length(); i++) {
@@ -72,27 +86,52 @@ Expression *Shunting::createExpression(string tokens) {
         }
             // Current token is a number, push
             // it to stack for numbers.
+//        else if (isdigit(tokens[i])) {
+//            int val = 0;
+//            // There may be more than one
+//            // digits in number.
+//            while (i < tokens.length() &&
+//                   isdigit(tokens[i])) {
+//                val = (val * 10) + (tokens[i] - '0');
+//                i++;
+//            }
+//            i--;
+//            Expression *num = new Number(val);
+//            value.push(num);
+//        }
         else if (isdigit(tokens[i])) {
-            int val = 0;
-            // There may be more than one
-            // digits in number.
-            while (i < tokens.length() &&
-                   isdigit(tokens[i])) {
-                val = (val * 10) + (tokens[i] - '0');
+            //will hold the current number which is consists of the current chars.
+            double temp = 0;
+            double tempDecimal = 0;
+            int exponent = 1;
+//        minusOp = true;
+            //turns a string that consists of numbers into an integer.
+            while (i < tokens.length() && isdigit(tokens[i])) {
+                temp *= 10;
+                temp += (tokens[i] - '0');
                 i++;
             }
+            if (i < tokens.length() && tokens[i] == '.') {
+                i++;
+                while (i < tokens.length() && isdigit(tokens[i])) {
+                    tempDecimal += ((double) (tokens[i] - '0') /
+                                    pow(10, exponent));
+                    exponent++;
+                    i++;
+                }
+                temp += tempDecimal;
+            }
             i--;
-            Expression *num = new Number(val);
-            value.push(num);
-        }
-        //ניסיון להמיר משתנים לערכם
-        else if (isParam(tokens[i])) {
-            Expression *num = new Number((symbolTableNameDouble[tokens[i]]));
-            value.push(num);
-        }
+            //push the number to the numbers' stack
+            value.push(new Number(temp));
+            //ניסיון להמיר משתנים לערכם
+//        else if (isParam(tokens[i])) {
+//            Expression *num = new Number((symbolTableNameDouble[tokens[i]]));
+//            value.push(num);
+//        }
             // Closing brace encountered, solve
             // entire brace.
-        else if (tokens[i] == ')') {
+        } else if (tokens[i] == ')') {
             while (!operators.empty() && operators.top() != '(') {
                 Expression *val2 = value.top();
                 value.pop();
@@ -107,7 +146,7 @@ Expression *Shunting::createExpression(string tokens) {
         }
 
             // Current token is an operator.
-        else {
+        else if (tokens[i] == '+' || tokens[i] == '-' || tokens[i] == '*' || tokens[i] == '/') {
             // While top of 'ops' has same or greater
             // precedence to current token, which
             // is an operator. Apply operator on top
@@ -127,6 +166,18 @@ Expression *Shunting::createExpression(string tokens) {
             }
             // Push current token to 'ops'.
             operators.push(tokens[i]);
+        } else {
+            string variableName = "";
+//            minusOp = true;
+            while (operationPriority(tokens[i]) == 0 && i < tokens.length()) {
+                if (tokens[i] != ' ') {
+                    variableName += tokens[i];
+                }
+                i += 1;
+            }
+            Expression *variableValue = new Number(this->planeData->getValueByName(variableName));
+            value.push(variableValue);
+            i -= 1;
         }
     }
 
