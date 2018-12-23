@@ -6,8 +6,8 @@
 #define FIRSTSTONE_PRINTCOMMAND_H
 
 
-class OpenServerCommand : public Command {
-    int calculate(vector<string> str) override;
+class PrintCommand : public Command {
+    int execute();
 };
 
 

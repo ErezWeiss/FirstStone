@@ -10,7 +10,9 @@
 
 class OpenServerCommand : public Command {
 public:
-    int execute(vector<string> str);
+    int execute();
+
+
 };
 
 

@@ -4,7 +4,7 @@
 
 #include "PrintCommand.h"
 
-int DefineVarCommand::calculate(vector<string> str) {
+int PrintCommand::execute() {
         Shunting shunting = Shunting();
         cout<<shunting.createExpression(str[1])->calculate()<<endl;
 }

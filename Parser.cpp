@@ -8,9 +8,10 @@
 #include "CommandExpression.h"
 #include "ConnectCommand.h"
 #include "DefineVarCommand.h"
-#include "EqualCommand.h"
 #include "SleepCommand.h"
 #include "ConditionParser.h"
+#include "EqualCommand.h"
+#include "PrintCommand.h"
 
 Parser::Parser(vector<string> &strings){
     this->planeData = new PlaneData;
@@ -21,25 +22,25 @@ Parser::Parser(vector<string> &strings){
 void Parser::setTheTables(){
     OpenServerCommand* openServerCommand = new OpenServerCommand();
     openServerCommand->setPlaneData(this->planeData);
-    this->expressionMap.insert(pair<string,Expression*>("openDataServer", new CommandExpression(openServerCommand)));
+    this->expressionMap.insert(pair<string,CommandExpression*>("openDataServer", new CommandExpression(openServerCommand)));
     ConnectCommand* connectCommand = new ConnectCommand();
     connectCommand->setPlaneData(this->planeData);
-    this->expressionMap.insert(pair<string,Expression*>("connect", new CommandExpression(connectCommand)));
+    this->expressionMap.insert(pair<string,CommandExpression*>("connect", new CommandExpression(connectCommand)));
     DefineVarCommand* defineVarCommand = new DefineVarCommand();
     defineVarCommand->setPlaneData(this->planeData);
-    this->expressionMap.insert(pair<string,Expression*>("var", new CommandExpression(defineVarCommand)));
+    this->expressionMap.insert(pair<string,CommandExpression*>("var", new CommandExpression(defineVarCommand)));
     EqualCommand* equalCommand = new EqualCommand();
-    equalCommand.setPlaneData(this->planeData);
-    this->expressionMap.insert(pair<string,Expression*>("=", new CommandExpression(equalCommand)));
+    equalCommand->setPlaneData(this->planeData);
+    this->expressionMap.insert(pair<string,CommandExpression*>("=", new CommandExpression(equalCommand)));
     ConditionParser* conditionParser= new ConditionParser();
-    conditionCommand.setPlaneData(this->planeData);
-    this->expressionMap.insert(pair<string,Expression*>("while", new CommandExpression(conditionParser)));
+    conditionParser->setPlaneData(this->planeData);
+    this->expressionMap.insert(pair<string,CommandExpression*>("while", new CommandExpression(conditionParser)));
     SleepCommand* sleepCommand= new SleepCommand();
-    sleepCommand.setPlaneData(this->planeData);
-    this->expressionMap.insert(pair<string,Expression*>("sleep", new CommandExpression(sleepCommand)));
+    sleepCommand->setPlaneData(this->planeData);
+    this->expressionMap.insert(pair<string,CommandExpression*>("sleep", new CommandExpression(sleepCommand)));
     PrintCommand* printCommand= new PrintCommand();
     printCommand.setPlaneData(this->planeData);
-    this->expressionMap.insert(pair<string,Expression*>("print", new CommandExpression(printCommand)));
+    this->expressionMap.insert(pair<string,CommandExpression*>("print", new CommandExpression(printCommand)));
 }
 
 /////////////////////////////////////////////ODSInterpret/////////////////////////////////////////////////////

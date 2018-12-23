@@ -3,9 +3,7 @@
 //
 
 #include "ConditionParser.h"
-ConditionParser::ConditionParser(vector<string> str) {
-    this->str = str;
-}
+
 bool ConditionParser::conditionCheck() {
     bool loop= true;
     Shunting shunting;
@@ -29,7 +27,7 @@ bool ConditionParser::conditionCheck() {
 }
 
 
-int ConditionParser::calculate(vector<string> str){
+int ConditionParser::execute(){
     Shunting shunting;
     bool loop=conditionCheck();
     while (loop){

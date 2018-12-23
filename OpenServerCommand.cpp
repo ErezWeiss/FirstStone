@@ -34,14 +34,14 @@ void* thread_func(void* arguments) {
         while(true) {
             ssize_t erez = read(new_socket, buffer, MAX_NUMBER);
             args->planeData->ReadFromPlane(buffer);
-            std::this_thread::sleep_for(0.1s);
+            std::this_thread::sleep_for(args->UpdatesPerSecond / 100);
         }
 }
 
-int OpenServerCommand::execute(vector<string> str) {
-    Shunting shunting=Shunting();
-    int portForListen = (int)shunting.createExpression(str[1])->calculate();
-    int UpdatesPerSecond = (int)shunting.createExpression(str[2])->calculate();
+int OpenServerCommand::execute() {
+    Shunting shunting;
+    int portForListen = (int)shunting.createExpression(params[1])->calculate();
+    int UpdatesPerSecond = (int)shunting.createExpression(params[2])->calculate();
 
     struct arg_struct args;
     args.portForListen = portForListen;

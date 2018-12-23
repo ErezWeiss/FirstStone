@@ -10,7 +10,7 @@
 SleepCommand::SleepCommand() {
 }
 
-int SleepCommand::execute(vector<string>str) {
+int SleepCommand::execute() {
     Shunting shunting;
     //cast 'double' into the receiver type 'int'
     int millisec = static_cast<int>(shunting.createExpression(str[1])->calculate());

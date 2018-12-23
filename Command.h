@@ -12,12 +12,15 @@
 using namespace std;
 
 class Command {
-private:
+protected:
     vector<string> params;
+    PlaneData* planeData;
 public:
 //    virtual int execute() = 0;
     virtual int execute() = 0;
-    virtual void setPlaneData(PlaneData * planeData);
+    virtual void setPlaneData(PlaneData * planeData){
+        this->planeData = planeData;
+    }
     void setParams(vector<string> params){
         this->params = params;
     }

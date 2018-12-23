@@ -3,10 +3,8 @@
 //
 
 #include "EqualCommand.h"
-int EqualCommand::execute(vector<string> str){}
 
-int EqualCommand::execute(vector<string> str,map<string,string>symbolTableNamePath, map<string,double >symbolTablePathDouble
-        ,  map<string,double >symbolTableNameDouble) {
+int EqualCommand::execute() {
     if (str[1]=="bind"){
         symbolTableNamePath.insert(str[0],str[2]);
     } else{
