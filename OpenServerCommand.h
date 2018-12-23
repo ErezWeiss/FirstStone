@@ -10,7 +10,7 @@
 
 class OpenServerCommand : public Command {
 public:
-    int execute(vector<string> str, PlaneData *planeData);
+    int execute(vector<string> str);
 };
 
 

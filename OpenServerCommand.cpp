@@ -38,7 +38,7 @@ void* thread_func(void* arguments) {
         }
 }
 
-int OpenServerCommand::execute(vector<string> str, PlaneData *planeData) {
+int OpenServerCommand::execute(vector<string> str) {
     Shunting shunting=Shunting();
     int portForListen = (int)shunting.createExpression(str[1])->calculate();
     int UpdatesPerSecond = (int)shunting.createExpression(str[2])->calculate();

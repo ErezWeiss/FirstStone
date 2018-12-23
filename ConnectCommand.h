@@ -15,7 +15,7 @@ public:
 
     ConnectCommand();
 
-    int execute(vector<string> str) override;
+    int execute();
 
     const string &getIp_address() const;
 

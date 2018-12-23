@@ -14,8 +14,8 @@ private:
     Command* cmd;
 public:
     CommandExpression(Command* cmd); //CTOR
-    double calculate(vector<string> str, PlaneData* planeData) const;
     double calculate() const;
+    void SetParams(vector<string> vector);
 };
 
 

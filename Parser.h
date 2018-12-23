@@ -8,12 +8,13 @@
 #include <vector>
 #include "Expression.h"
 #include "PlaneData.h"
+#include "CommandExpression.h"
 
 using namespace std;
 
 class Parser {
 private:
-    map<string, Expression*> expressionMap;
+    map<string, CommandExpression*> expressionMap;
     vector<string> strings;
     PlaneData* planeData;
 
@@ -29,6 +30,7 @@ public:
     vector<string> IfWhileInterpret(vector<string> lines);
     vector<string> IfInterpret(vector<string> lines);
     vector<string> EqualInterpret(string line);
+    void DoTheCommands(vector<string> strings);
 
 };
 

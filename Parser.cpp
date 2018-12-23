@@ -8,6 +8,9 @@
 #include "CommandExpression.h"
 #include "ConnectCommand.h"
 #include "DefineVarCommand.h"
+#include "EqualCommand.h"
+#include "SleepCommand.h"
+#include "ConditionParser.h"
 
 Parser::Parser(vector<string> &strings){
     this->planeData = new PlaneData;
@@ -16,9 +19,27 @@ Parser::Parser(vector<string> &strings){
 }
 //hey bro
 void Parser::setTheTables(){
-    this->expressionMap.insert(pair<string,Expression*>("openDataServer", new CommandExpression(new OpenServerCommand())));
-    this->expressionMap.insert(pair<string,Expression*>("connect", new CommandExpression(new ConnectCommand())));
-    this->expressionMap.insert(pair<string,Expression*>("var", new CommandExpression(new DefineVarCommand())));
+    OpenServerCommand* openServerCommand = new OpenServerCommand();
+    openServerCommand->setPlaneData(this->planeData);
+    this->expressionMap.insert(pair<string,Expression*>("openDataServer", new CommandExpression(openServerCommand)));
+    ConnectCommand* connectCommand = new ConnectCommand();
+    connectCommand->setPlaneData(this->planeData);
+    this->expressionMap.insert(pair<string,Expression*>("connect", new CommandExpression(connectCommand)));
+    DefineVarCommand* defineVarCommand = new DefineVarCommand();
+    defineVarCommand->setPlaneData(this->planeData);
+    this->expressionMap.insert(pair<string,Expression*>("var", new CommandExpression(defineVarCommand)));
+    EqualCommand* equalCommand = new EqualCommand();
+    equalCommand.setPlaneData(this->planeData);
+    this->expressionMap.insert(pair<string,Expression*>("=", new CommandExpression(equalCommand)));
+    ConditionParser* conditionParser= new ConditionParser();
+    conditionCommand.setPlaneData(this->planeData);
+    this->expressionMap.insert(pair<string,Expression*>("while", new CommandExpression(conditionParser)));
+    SleepCommand* sleepCommand= new SleepCommand();
+    sleepCommand.setPlaneData(this->planeData);
+    this->expressionMap.insert(pair<string,Expression*>("sleep", new CommandExpression(sleepCommand)));
+    PrintCommand* printCommand= new PrintCommand();
+    printCommand.setPlaneData(this->planeData);
+    this->expressionMap.insert(pair<string,Expression*>("print", new CommandExpression(printCommand)));
 }
 
 /////////////////////////////////////////////ODSInterpret/////////////////////////////////////////////////////
@@ -200,12 +221,9 @@ void Parser::startInterpret() {
 }
 
 
-void Parser::parserTheText(vector<string> strings){
+void Parser::DoTheCommands(vector<string> strings){
     string str;
     str = strings[0];
-    if (str=="var"){
-        expressionMap[str]->calculate(strings, planeData);
-    } else {
-        expressionMap[str]->calculate(strings, planeData);
-    }
+    expressionMap[str] -> SetParams(strings);
+    expressionMap[str] -> calculate();
 }
