@@ -12,4 +12,15 @@ int main(int argc, char* argv[]) {
     vector<string> vector = lexer.getStringVector();
     Parser parser(vector);
     parser.startInterpret();
+
+    return 0;
+//PlaneData *planeData = new PlaneData();
+//Shunting shunting(planeData);
+////planeData->AddToSymbolTableNameDouble("header",5);
+//planeData->AddToSymbolTableNamePath("b","c");
+//planeData->AddToSymbolTablePathDouble("c",10);
+////Expression * ex3 =new Number(shunting.createExpression("b/2+3")->calculate());
+////Expression * ex =new Number(shunting.createExpression("header/2+3")->calculate());
+//    Expression * ex1 =shunting.createExpression("b/2+3");
+//    cout << ex1->calculate();
 }

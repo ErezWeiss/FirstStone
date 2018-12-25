@@ -7,9 +7,12 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <strings.h>
-#include <zconf.h>
 #include "PlaneData.h"
 #include <algorithm>
+#include <unistd.h>
+#include <iostream>
+#include <pthread.h>
+
 
 PlaneData::PlaneData() {
 
@@ -27,7 +30,20 @@ void PlaneData::AddToSymbolTableNameDouble(string a, double b){
 }
 
 double PlaneData::getValueByName(string str){
-    return this->symbolTableNameDouble.find(str)->second;
+    //not found
+    if (this->symbolTableNameDouble.find(str) == this->symbolTableNameDouble.end() ) {
+        // found
+        if(this->symbolTableNamePath.find(str) != this->symbolTableNamePath.end() ){
+            return this->symbolTablePathDouble.find(this->symbolTableNamePath.find(str)->second)->second;
+        } else{
+            return 0;
+        }
+    }
+        //found
+    else{
+        return this->symbolTableNameDouble.find(str)->second;
+    }
+
     //should throw exception here couse there is no value for that parameter
 }
 
@@ -46,7 +62,7 @@ void PlaneData::ReadFromPlane(string info){
 }
 
 void PlaneData::UpdateTheTable(vector<double> vector){
-    this->symbolTablePathDouble["/instrumentation/airspeed-indicator/indicated-speed-kt"] = vector[0];
+    symbolTablePathDouble["/instrumentation/airspeed-indicator/indicated-speed-kt"] = vector[0];
     this->symbolTablePathDouble["/instrumentation/altimeter/indicated-altitude-ft"] = vector[1];
     this->symbolTablePathDouble["/instrumentation/altimeter/pressure-alt-ft"] = vector[2];
     this->symbolTablePathDouble["/instrumentation/attitude-indicator/indicated-pitch-deg"] = vector[3];
@@ -119,7 +135,6 @@ void PlaneData::SetValueInGame(string pathAndNewValue){
     }
 // "set controls/flight/rudder 0\r\n"
     n = write(sockfd, pathAndNewValue.c_str(), pathAndNewValue.length());
-
     if (n < 0) {
         throw("ERROR writing to socket");
     }

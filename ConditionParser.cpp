@@ -2,25 +2,26 @@
 // Created by erez on 12/18/18.
 //
 
+#include <iostream>
 #include "ConditionParser.h"
 
 bool ConditionParser::conditionCheck() {
     bool loop= true;
     Shunting shunting(this->planeData);
     int i=0;
-    if ((this->str[2]=="<")&&((shunting.createExpression(this->str[1])->calculate())>=(shunting.createExpression(str[2])->calculate()))){
+    if ((this->params[2]=="<")&&((shunting.createExpression(this->params[1])->calculate()) >= (shunting.createExpression(params[3])->calculate()))){
         loop= false;
     }
-    if ((this->str[2]==">")&&((shunting.createExpression(this->str[1])->calculate())<=(shunting.createExpression(str[2])->calculate()))){
+    if ((this->params[2]==">")&&((shunting.createExpression(this->params[1])->calculate()) <= (shunting.createExpression(params[3])->calculate()))){
         loop= false;
     }
-    if (((this->str[2]=="=")||(this->str[2]=="=="))&&((shunting.createExpression(this->str[1])->calculate())==(shunting.createExpression(str[2])->calculate()))){
+    if (((this->params[2]=="=")||(this->params[2]=="=="))&&((shunting.createExpression(this->params[1])->calculate())==(shunting.createExpression(params[3])->calculate()))){
         loop= false;
     }
-    if ((this->str[2]=="<=")&&((shunting.createExpression(this->str[1])->calculate())>(shunting.createExpression(str[2])->calculate()))){
+    if ((this->params[2]=="<=")&&((shunting.createExpression(this->params[1])->calculate()) > (shunting.createExpression(params[3])->calculate()))){
         loop= false;
     }
-    if ((this->str[2]==">=")&&((shunting.createExpression(this->str[1])->calculate())<(shunting.createExpression(str[2])->calculate()))){
+    if ((this->params[2]==">=")&&((shunting.createExpression(this->params[1])->calculate()) < (shunting.createExpression(params[2])->calculate()))){
         loop= false;
     }
     return loop;
@@ -29,12 +30,30 @@ bool ConditionParser::conditionCheck() {
 
 int ConditionParser::execute(){
     Shunting shunting(this->planeData);
+    vector<string> returnStringVector;
     bool loop=conditionCheck();
     while (loop){
-        for (int i=4;i<this->str.size();i++){
-            shunting.createExpression(this->str[i])->calculate();
+        for (int i=4;i<this->params.size();i++){
+            string firstWord = params[i].substr(0, params[i].find(" "));
+            if (firstWord=="print") {
+                returnStringVector = this->parser->PrintInterpret(params[i]);
+                this->parser->DoTheCommands(returnStringVector);
+            } else if (firstWord=="sleep") {
+                returnStringVector = this->parser->SleepInterpret(params[i]);
+                this->parser->DoTheCommands(returnStringVector);
+            } else {
+                returnStringVector = this->parser->EqualInterpret(params[i]);
+                this->parser->DoTheCommands(returnStringVector);
+            }
         }
     loop=conditionCheck();
-    return 0;
     }
+}
+
+void ConditionParser::setParser(Parser *parser) {
+    ConditionParser::parser = parser;
+}
+
+void ConditionParser::setExpressionMap(const map<string, CommandExpression *> &expressionMap) {
+    ConditionParser::expressionMap = expressionMap;
 }

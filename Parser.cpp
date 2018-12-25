@@ -37,6 +37,8 @@ void Parser::setTheTables(){
     this->expressionMap.insert(pair<string,CommandExpression*>("=", new CommandExpression(equalCommand)));
     ConditionParser* conditionParser= new ConditionParser();
     conditionParser->setPlaneData(this->planeData);
+    conditionParser->setParser(this);
+    conditionParser->setExpressionMap(this->expressionMap);
     this->expressionMap.insert(pair<string,CommandExpression*>("while", new CommandExpression(conditionParser)));
     SleepCommand* sleepCommand= new SleepCommand();
     sleepCommand->setPlaneData(this->planeData);
@@ -98,7 +100,7 @@ vector<string> Parser::VarInterpret(string line){
     if (line[0]==' '){
         line = line.erase(0, 1);
     }
-//var breaks = bind \"/controls/flight/speedbrake\"
+//var breaks = bind "/controls/flight/speedbrake"
 // sample...
 
     // looking for "bind"
@@ -107,7 +109,6 @@ vector<string> Parser::VarInterpret(string line){
         returnStringVector.push_back("bind");                   // push "bind"
         line.erase(0, line.find(' ') + 1);
         line.erase(std::remove(line.begin(), line.end(), '"'), line.end());
-        line.erase(0,1);
         returnStringVector.push_back(line);
     } else {
         returnStringVector.push_back(line);
@@ -154,7 +155,7 @@ vector<string> Parser::IfWhileInterpret(vector<string> lines){
         rightCond = rightCond.substr(0,rightCond.length()-1);
     }
     returnStringVector.push_back(rightCond);                        // push right condition
-    for (auto it = strings.begin()+1; it != strings.end(); ++it){
+    for (auto it = lines.begin()+1; it != lines.end(); ++it){
         returnStringVector.push_back(*it);                          // push all the commands in the line...
     }
     unsigned long length = returnStringVector.size();               // erase the "}"
