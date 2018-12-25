@@ -4,16 +4,19 @@
 #include <thread>
 #include "OpenServerCommand.h"
 #include "Shunting.h"
+#include <chrono>
 #define MAX_NUMBER 300
-
+extern bool connectedGame;
 struct arg_struct {
     int portForListen;
     int UpdatesPerSecond;
     PlaneData *planeData;
 };
 
+pthread_mutex_t lock;
+
 void* thread_func(void* arguments) {
-    struct arg_struct *args = (struct arg_struct *)arguments;
+        struct arg_struct *args = (struct arg_struct *)arguments;
         int server_fd, new_socket, valread;
         char buffer[MAX_NUMBER];
         struct sockaddr_in address;
@@ -31,9 +34,15 @@ void* thread_func(void* arguments) {
             perror("accept");
             exit(EXIT_FAILURE);
         }
+
         while(true) {
+//            double readPerSecond = (double)args->UpdatesPerSecond;
+//            readPerSecond = 1/readPerSecond;
+            pthread_mutex_lock(&lock);
             ssize_t erez = read(new_socket, buffer, MAX_NUMBER);
             args->planeData->ReadFromPlane(buffer);
+            connectedGame = true;
+            pthread_mutex_unlock(&lock);
             std::this_thread::sleep_for(0.1s);          /// fix the time arg. the second arg...
         }
 }
@@ -51,5 +60,6 @@ int OpenServerCommand::execute() {
     pthread_create(&trid, nullptr, thread_func, (void *)&args);
 //    (void) pthread_join(trid, NULL);
 }
+
 
 

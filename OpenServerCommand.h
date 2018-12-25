@@ -10,10 +10,10 @@
 
 class OpenServerCommand : public Command {
 public:
+    bool isDidTheGameSentSomething() const;
+    void changeIsDidTheGameSentSomething();
     int execute();
-
-
-};
+    };
 
 
 #endif //FIRSTSTONE_OPENSERVERCOMMAND_H

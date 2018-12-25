@@ -3,7 +3,9 @@
 //4
 
 #include <regex>
+#include <iostream>
 #include "Parser.h"
+#include <algorithm>
 #include "OpenServerCommand.h"
 #include "CommandExpression.h"
 #include "ConnectCommand.h"
@@ -12,6 +14,7 @@
 #include "ConditionParser.h"
 #include "EqualCommand.h"
 #include "PrintCommand.h"
+extern bool connectedGame;
 
 Parser::Parser(vector<string> &strings){
     this->planeData = new PlaneData;
@@ -70,12 +73,14 @@ vector<string> Parser::ConnectInterpret(string line){
     returnStringVector.push_back(firstWord);								// push the first word into the vector
     line.erase(0, line.find(' ') + 1);                                      // erase the first word
     string IP = line.substr(0, line.find(" "));
-    returnStringVector.push_back(firstWord);                                // push the IP into vector
+    returnStringVector.push_back(IP);                                // push the IP into vector
+    line.erase(0, line.find(' ') + 1);
     returnStringVector.push_back(line);                                     // push the port
     return returnStringVector;
 }
 /////////////////////////////////////////////VarInterpret/////////////////////////////////////////////////////
 vector<string> Parser::VarInterpret(string line){
+    //var breaks = bind \"/controls/flight/speedbrake\"
     vector<string> returnStringVector;
     string firstWord = line.substr(0, line.find(' '));
     returnStringVector.push_back(firstWord);								// push the first word into the vector
@@ -93,12 +98,16 @@ vector<string> Parser::VarInterpret(string line){
     if (line[0]==' '){
         line = line.erase(0, 1);
     }
+//var breaks = bind \"/controls/flight/speedbrake\"
+// sample...
 
     // looking for "bind"
     std::size_t found = line.find("bind");
     if (found!=std::string::npos){ // if found!!
         returnStringVector.push_back("bind");                   // push "bind"
         line.erase(0, line.find(' ') + 1);
+        line.erase(std::remove(line.begin(), line.end(), '"'), line.end());
+        line.erase(0,1);
         returnStringVector.push_back(line);
     } else {
         returnStringVector.push_back(line);
@@ -173,11 +182,8 @@ vector<string> Parser::EqualInterpret(string line){
     }
     returnStringVector.push_back(firstWord);								// push the first word into the vector
     line.erase(0, line.find('=') + 1);                                      // erase the first word
-
-    if (line[0]==' '){
-        line = firstWord.substr(1,firstWord.length()-1);               // erase spaces
-    }
     returnStringVector.push_back(line);                                     // push the port
+    return returnStringVector;
 }
 
 
@@ -193,12 +199,17 @@ void Parser::startInterpret() {
 
         if(firstWord=="openDataServer") {
             returnStringVector = ODSInterpret(*it);
+            DoTheCommands(returnStringVector);
         } else if(firstWord=="connect") {
+            while (!connectedGame){
+                                                        // waiting to be opened...
+            }
             returnStringVector = ConnectInterpret(*it);
+            DoTheCommands(returnStringVector);
         } else if (firstWord=="var") {
             returnStringVector = VarInterpret(*it);
+            DoTheCommands(returnStringVector);
         }
-
         else if (firstWord=="while") {
             vector<string> lines;
             while (bufferedLine.find('}')==std::string::npos){  // while the line doesn't contains '}'
@@ -208,15 +219,19 @@ void Parser::startInterpret() {
             }
             lines.push_back(bufferedLine);
             returnStringVector = IfWhileInterpret(lines);
+            DoTheCommands(returnStringVector);
         }
         else if (firstWord=="if") {
             // some det
         } else if (firstWord=="print") {
             returnStringVector = PrintInterpret(*it);
+            DoTheCommands(returnStringVector);
         } else if (firstWord=="sleep") {
             returnStringVector = SleepInterpret(*it);
+            DoTheCommands(returnStringVector);
         } else {
             returnStringVector = EqualInterpret(*it);
+            DoTheCommands(returnStringVector);
         }
     }
 }

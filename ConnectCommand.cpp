@@ -2,6 +2,10 @@
 // Created by erez on 12/18/18.
 //
 
+#include <netinet/in.h>
+#include <netdb.h>
+#include <strings.h>
+#include <zconf.h>
 #include "ConnectCommand.h"
 
 ConnectCommand::ConnectCommand() {
@@ -16,9 +20,9 @@ void ConnectCommand::setIp_address(const string &ip_address) {
 }
 
 int ConnectCommand::execute() {
-    Shunting* shunting=new Shunting(this->planeData);
-    this->ip_address=params[1];        //..................
-    this->ip_address=shunting->createExpression(params[2])->calculate();
-
+    Shunting shunting(this->planeData);
+    this->ip_address = params[1];
+    this->planeData->setIp_address(this->ip_address);
+    this->port = (int)shunting.createExpression(params[2])->calculate();
+    this->planeData->setPort(this->port);
 }
-

@@ -13,22 +13,25 @@ private:
     map<string, double> symbolTablePathDouble;  // updated from game by thread
     map<string, string> symbolTableNamePath;    // for bind
     map<string, double> symbolTableNameDouble;  // for us. for the bosses
+    string ip_address;
+    int port;
+public:
+    void setIp_address(const string &ip_address);
+
+    void setPort(int port);
 
 public:
     PlaneData();
-    map<string, string> GetSymbolTableNamePath(){
-        return this->symbolTableNamePath;
-    }
-    map<string, double> GetSymbolTablePathDouble(){
-        return this->symbolTablePathDouble;
-    }
-    map<string, double> GetSymbolTableNameDouble(){
-        return this->symbolTableNameDouble;
-    }
+    string FixThePath(string toBeFixed);
+    void SetValueInGame(string pathAndNewValue);
     double getValueByName(string st);
     void ReadFromPlane(string info);
     void UpdateTheTable(vector<double> vector);
-    double getValueByName(string st);
+
+    void AddToSymbolTableNamePath(string a, string b);
+    void AddToSymbolTablePathDouble(string a, double b);
+    void AddToSymbolTableNameDouble(string a, double b);
+
     map<string, double> getsymbolTablePathDouble(){
         return this->symbolTablePathDouble;
     }
