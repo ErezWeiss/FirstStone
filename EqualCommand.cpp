@@ -5,14 +5,17 @@
 #include "EqualCommand.h"
 
 int EqualCommand::execute() {
-    string varName = this->params[1];
-    string value = this->params[2];
-    string path = this->planeData->getSymbolTableNamePath()[varName];
-    string final = path.append(" ");
-    final.append(value);
 
-    // "set controls/flight/rudder 0\r\n"
-    this->planeData->writeToSimulator(final.c_str());
+    if (this->params[1]=="bind"){ //breaks = bind "/controls/flight/speedbrake"
+        this->planeData->AddToSymbolTableNamePath(this->params[0],this->params[2]);
+    } else {
+        string varName = this->params[1];
+        string value = this->params[2];
+        string path = this->planeData->getSymbolTableNamePath()[varName];
+        string final = path.append(" ");
+        final.append(value);
+        this->planeData->writeToSimulator(final.c_str());
+    }
 }
 
 //if (this->params[1]=="bind"){ //breaks = bind "/controls/flight/speedbrake"

@@ -17,7 +17,7 @@
 #include <stdlib.h>
 
 #include <netinet/in.h>
-
+extern bool connectedGame;
 
 PlaneData::PlaneData() {
 
