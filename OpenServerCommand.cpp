@@ -42,7 +42,7 @@ void* thread_func(void* arguments) {
     while(true) {
 //        pthread_mutex_lock(&mutex);
         ssize_t erez = read(new_socket, buffer, MAX_NUMBER);
-        cout << buffer;
+//        cout << buffer;
         args->planeData->ReadFromPlane(buffer);
 //        pthread_mutex_unlock(&mutex);
     }
@@ -56,12 +56,13 @@ int OpenServerCommand::execute() {
     int portForListen = (int)shunting.createExpression(params[1])->calculate();
     int UpdatesPerSecond = (int)shunting.createExpression(params[2])->calculate();
 
-    struct arg_struct args;
-    args.portForListen = portForListen;
-    args.UpdatesPerSecond = UpdatesPerSecond;
-    args.planeData = planeData;
+//    struct arg_struct args;
+    struct arg_struct * args = new arg_struct();
+    args->portForListen = portForListen;
+    args->UpdatesPerSecond = UpdatesPerSecond;
+    args->planeData = planeData;
     pthread_t trid;
-    pthread_create(&trid, nullptr, thread_func, &args);
+    pthread_create(&trid, nullptr, thread_func, args);
 
 //    pthread_join(trid, nullptr);
 }

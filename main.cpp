@@ -12,7 +12,7 @@ int main(int argc, char* argv[]) {
     vector<string> vector = lexer.getStringVector();
     Parser parser(vector);
     parser.startInterpret();
-
+while(1){}
     return 0;
 //PlaneData *planeData = new PlaneData();
 //Shunting shunting(planeData);
