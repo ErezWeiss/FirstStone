@@ -27,6 +27,7 @@ void Parser::setTheTables(){
     openServerCommand->setPlaneData(this->planeData);
     this->expressionMap.insert(pair<string,CommandExpression*>("openDataServer", new CommandExpression(openServerCommand)));
     ConnectCommand* connectCommand = new ConnectCommand();
+    connectCommand->setOpenClientSocket(new OpenClientSocket);
     connectCommand->setPlaneData(this->planeData);
     this->expressionMap.insert(pair<string,CommandExpression*>("connect", new CommandExpression(connectCommand)));
     DefineVarCommand* defineVarCommand = new DefineVarCommand();

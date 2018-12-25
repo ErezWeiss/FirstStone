@@ -63,8 +63,6 @@ int OpenServerCommand::execute() {
     args->planeData = planeData;
     pthread_t trid;
     pthread_create(&trid, nullptr, thread_func, args);
-
-//    pthread_join(trid, nullptr);
 }
 
 

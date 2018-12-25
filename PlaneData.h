@@ -15,15 +15,17 @@ private:
     map<string, double> symbolTableNameDouble;  // for us. for the bosses
     string ip_address;
     int port;
+    int sockfd;
+
 public:
+
     void setIp_address(const string &ip_address);
-
     void setPort(int port);
-
-public:
+    void openSocket(string ip, double portNumber);
+    void writeToSimulator(const char *buffer);
     PlaneData();
     string FixThePath(string toBeFixed);
-    void SetValueInGame(string pathAndNewValue);
+//    void SetValueInGame(string pathAndNewValue);
     double getValueByName(string st);
     void ReadFromPlane(string info);
     void UpdateTheTable(vector<double> vector);

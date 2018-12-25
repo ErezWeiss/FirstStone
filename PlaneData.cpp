@@ -12,6 +12,11 @@
 #include <unistd.h>
 #include <iostream>
 #include <pthread.h>
+#include <cstring>
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <netinet/in.h>
 
 
 PlaneData::PlaneData() {
@@ -62,7 +67,7 @@ void PlaneData::ReadFromPlane(string info){
 }
 
 void PlaneData::UpdateTheTable(vector<double> vector){
-    symbolTablePathDouble["/instrumentation/airspeed-indicator/indicated-speed-kt"] = vector[0];
+    this->symbolTablePathDouble["/instrumentation/airspeed-indicator/indicated-speed-kt"] = vector[0];
     this->symbolTablePathDouble["/instrumentation/altimeter/indicated-altitude-ft"] = vector[1];
     this->symbolTablePathDouble["/instrumentation/altimeter/pressure-alt-ft"] = vector[2];
     this->symbolTablePathDouble["/instrumentation/attitude-indicator/indicated-pitch-deg"] = vector[3];
@@ -81,7 +86,7 @@ void PlaneData::UpdateTheTable(vector<double> vector){
     this->symbolTablePathDouble["/instrumentation/vertical-speed-indicator/indicated-speed-fpm"] = vector[16];
     this->symbolTablePathDouble["/controls/flight/rudder"] = vector[17];
     this->symbolTablePathDouble["/controls/flight/flaps"] = vector[18];
-    this->symbolTablePathDouble["/controls/engines/engine/throttle"] = vector[19];
+    this->symbolTablePathDouble["/controls/engines/current-engine/throttle"] = vector[19];
     this->symbolTablePathDouble["/engines/engine/rpm"] = vector[20];
     this->symbolTablePathDouble["/controls/flight/aileron"] = vector[21];
     this->symbolTablePathDouble["/controls/flight/elevator"] = vector[22];
@@ -97,45 +102,89 @@ void PlaneData::setPort(int port) {
 
 string PlaneData::FixThePath(string toBeFixed){
     //"set controls/flight/rudder 0\r\n"
+    string path = toBeFixed;
+    if(path[0]=='/'){
+        path.erase(0,1);
+    }
     string first = "set ";
 
-    first.append(toBeFixed);
+    first.append(path);
     first.append("\r\n");
     return first;
 
 }
 
-void PlaneData::SetValueInGame(string pathAndNewValue){
-    pathAndNewValue = FixThePath(pathAndNewValue);
-    int sockfd, portno, n;
+void PlaneData::openSocket(string ip, double portNumber) {
+    int portno;
     struct sockaddr_in serv_addr;
     struct hostent *server;
-    portno = this->port;
+    portno = portNumber;
     /* Create a socket point */
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    this->sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0) {
-        throw("ERROR opening socket");
+        perror("ERROR opening socket");
+        exit(1);
     }
-
-    server = gethostbyname(this->ip_address.c_str());
-
+    server = gethostbyname(ip.c_str());
     if (server == NULL) {
-        fprintf(stderr,"ERROR, no such host\n");
+        fprintf(stderr, "ERROR, no such host\n");
         exit(0);
     }
-
     bzero((char *) &serv_addr, sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
-    bcopy(server->h_addr, (char *)&serv_addr.sin_addr.s_addr, server->h_length);
-    serv_addr.sin_port = htons((uint16_t)portno);
+    bcopy(server->h_addr, (char *) &serv_addr.sin_addr.s_addr, server->h_length);
+    serv_addr.sin_port = htons(portno);
 
     /* Now connect to the server */
-    if (connect(sockfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {
-        throw "ERROR connecting";
-    }
-// "set controls/flight/rudder 0\r\n"
-    n = write(sockfd, pathAndNewValue.c_str(), pathAndNewValue.length());
-    if (n < 0) {
-        throw("ERROR writing to socket");
+    if (connect(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) {
+        perror("ERROR connecting");
+        exit(1);
     }
 }
+
+void PlaneData::writeToSimulator(const char *buffer) {
+    int n;
+    string toBeFixed(buffer);
+    toBeFixed = FixThePath(toBeFixed);
+    /* Send message to the server */
+    n = write(sockfd, toBeFixed.c_str(), toBeFixed.length());
+    if (n < 0) {
+        perror("ERROR writing to socket");
+        exit(1);
+    }
+}
+
+//void PlaneData::SetValueInGame(string pathAndNewValue){
+//    pathAndNewValue = FixThePath(pathAndNewValue);
+//    int sockfd, portno, n;
+//    struct sockaddr_in serv_addr;
+//    struct hostent *server;
+//    portno = this->port;
+//    /* Create a socket point */
+//    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+//    if (sockfd < 0) {
+//        throw("ERROR opening socket");
+//    }
+//
+//    server = gethostbyname(this->ip_address.c_str());
+//
+//    if (server == NULL) {
+//        fprintf(stderr,"ERROR, no such host\n");
+//        exit(0);
+//    }
+//
+//    bzero((char *) &serv_addr, sizeof(serv_addr));
+//    serv_addr.sin_family = AF_INET;
+//    bcopy(server->h_addr, (char *)&serv_addr.sin_addr.s_addr, server->h_length);
+//    serv_addr.sin_port = htons((uint16_t)portno);
+//
+//    /* Now connect to the server */
+//    if (connect(sockfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {
+//        throw "ERROR connecting";
+//    }
+//// "set controls/flight/rudder 0\r\n"
+//    n = write(sockfd, pathAndNewValue.c_str(), pathAndNewValue.length());
+//    if (n < 0) {
+//        throw("ERROR writing to socket");
+//    }
+//}

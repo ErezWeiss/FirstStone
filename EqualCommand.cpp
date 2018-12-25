@@ -10,8 +10,9 @@ int EqualCommand::execute() {
     string path = this->planeData->getSymbolTableNamePath()[varName];
     string final = path.append(" ");
     final.append(value);
+
     // "set controls/flight/rudder 0\r\n"
-    this->planeData->SetValueInGame(final);
+    this->planeData->writeToSimulator(final.c_str());
 }
 
 //if (this->params[1]=="bind"){ //breaks = bind "/controls/flight/speedbrake"
