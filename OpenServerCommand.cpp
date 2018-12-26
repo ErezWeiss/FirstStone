@@ -3,20 +3,12 @@
 #include <zconf.h>
 #include <pthread.h>
 #include "OpenServerCommand.h"
-#include "Shunting.h"
 #include <chrono>
 #include <iostream>
-//#include <mutex>
 
 #define MAX_NUMBER 300
 extern bool connectedGame;
-struct arg_struct {
-    int portForListen;
-    int UpdatesPerSecond;
-    PlaneData *planeData;
-};
-
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+int server_fdGlobal;
 
 void* thread_func(void* arguments) {
         struct arg_struct *args = (struct arg_struct*)arguments;
@@ -26,6 +18,7 @@ void* thread_func(void* arguments) {
         int addrlen = sizeof(address);
 
         server_fd = socket(AF_INET, SOCK_STREAM, 0);
+        server_fdGlobal = server_fd;
         address.sin_family = AF_INET;
         address.sin_addr.s_addr = INADDR_ANY;
         address.sin_port = htons((uint16_t)args->portForListen);
@@ -40,32 +33,26 @@ void* thread_func(void* arguments) {
         }
     connectedGame = true;
     while(true) {
-//        pthread_mutex_lock(&mutex);
         ssize_t erez = read(new_socket, buffer, MAX_NUMBER);
 //        cout << buffer;
         args->planeData->ReadFromPlane(buffer);
-//        pthread_mutex_unlock(&mutex);
     }
-    delete args;
-    return nullptr;
-
 }
 
 int OpenServerCommand::execute() {
-    Shunting shunting(this->planeData);
-    int portForListen = (int)shunting.createExpression(params[1])->calculate();
-    int UpdatesPerSecond = (int)shunting.createExpression(params[2])->calculate();
+    int portForListen = (int)shunting->createExpression(params[1])->calculate();
+    int UpdatesPerSecond = (int)shunting->createExpression(params[2])->calculate();
 
 //    struct arg_struct args;
-    struct arg_struct * args = new arg_struct();
-    args->portForListen = portForListen;
-    args->UpdatesPerSecond = UpdatesPerSecond;
-    args->planeData = planeData;
+    this->args = new arg_struct();
+    this->args->portForListen = portForListen;
+    this->args->UpdatesPerSecond = UpdatesPerSecond;
+    this->args->planeData = planeData;
     pthread_t trid;
-    pthread_create(&trid, nullptr, thread_func, args);
+    pthread_create(&trid, nullptr, thread_func, this->args);
 }
 
-
-
-
-
+OpenServerCommand::~OpenServerCommand(){
+    delete this->args;
+    close(server_fdGlobal);
+}

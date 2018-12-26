@@ -15,3 +15,7 @@ void CommandExpression::SetParams(vector<string> vector){
 double CommandExpression::calculate() const{
     return cmd->execute(); // hey brother
 }
+
+CommandExpression::~CommandExpression(){
+    delete this->cmd;
+}

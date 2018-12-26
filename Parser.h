@@ -17,6 +17,7 @@ private:
     map<string, CommandExpression*> expressionMap;
     vector<string> strings;
     PlaneData* planeData;
+    Shunting* shunting;
 
 public:
     Parser(vector<string> &strings);
@@ -31,7 +32,7 @@ public:
     vector<string> IfInterpret(vector<string> lines);
     vector<string> EqualInterpret(string line);
     void DoTheCommands(vector<string> strings);
-
+    ~Parser();
 };
 
 

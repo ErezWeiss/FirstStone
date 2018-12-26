@@ -20,6 +20,9 @@ public:
     OpenClientSocket();
 
     void openSocket(string ip, double portNumber);
+
+    virtual ~OpenClientSocket();
+
     void writeToSimulator(const char *buffer);
 
     int getSockfd() const;

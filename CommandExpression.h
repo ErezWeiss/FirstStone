@@ -16,6 +16,7 @@ public:
     CommandExpression(Command* cmd); //CTOR
     double calculate() const;
     void SetParams(vector<string> vector);
+    ~CommandExpression();
 };
 
 

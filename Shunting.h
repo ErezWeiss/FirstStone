@@ -6,6 +6,7 @@
 #define FIRSTSTONE_SHUNTING_H
 
 #include <map>
+#include <list>
 #include "Expression.h"
 #include "stack"
 
@@ -18,6 +19,7 @@ class Shunting {
     };
 private:
     PlaneData *planeData;
+    list<Expression*> listOfNewExpressions;
 public:
     Shunting(PlaneData *planeData);
     void initializeMap();
@@ -26,7 +28,10 @@ public:
     int operationPriority(char operation);
     Expression *createExpression(string tokens);
     Expression* applyOp(Expression* val1, Expression* val2, char operation);
+    string changeExpression(string tokens, int j);
+    virtual ~Shunting();
 };
+
 
 
 

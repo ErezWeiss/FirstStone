@@ -11,9 +11,8 @@ SleepCommand::SleepCommand() {
 }
 
 int SleepCommand::execute() {
-    Shunting shunting(this->planeData);
     //cast 'double' into the receiver type 'int'
-    int millisec = static_cast<int>(shunting.createExpression(params[1])->calculate());
+    int millisec = static_cast<int>(shunting->createExpression(params[1])->calculate());
     this_thread::sleep_for(chrono::milliseconds(millisec));
     return 0;
 }

@@ -8,12 +8,14 @@
 #include <string>
 #include <vector>
 #include "PlaneData.h"
+#include "Shunting.h"
 
 using namespace std;
 
 class Command {
 protected:
     vector<string> params;
+    Shunting *shunting;
     PlaneData* planeData;
 public:
 //    virtual int execute() = 0;
@@ -23,6 +25,10 @@ public:
     }
     void setParams(vector<string> params){
         this->params = params;
+    }
+
+    void setShunting(Shunting *shunting) {
+        Command::shunting = shunting;
     }
 };
 

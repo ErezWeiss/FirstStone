@@ -7,21 +7,27 @@
 
 bool ConditionParser::conditionCheck() {
     bool loop= true;
-    Shunting shunting(this->planeData);
+
+    // if condition
+    if (this->params[0]=="if"){
+        loop=false;
+        return loop;
+    }
+
     int i=0;
-    if ((this->params[2]=="<")&&((shunting.createExpression(this->params[1])->calculate()) >= (shunting.createExpression(params[3])->calculate()))){
+    if ((this->params[2]=="<")&&((shunting->createExpression(this->params[1])->calculate()) >= (shunting->createExpression(params[3])->calculate()))){
         loop= false;
     }
-    if ((this->params[2]==">")&&((shunting.createExpression(this->params[1])->calculate()) <= (shunting.createExpression(params[3])->calculate()))){
+    if ((this->params[2]==">")&&((shunting->createExpression(this->params[1])->calculate()) <= (shunting->createExpression(params[3])->calculate()))){
         loop= false;
     }
-    if (((this->params[2]=="=")||(this->params[2]=="=="))&&((shunting.createExpression(this->params[1])->calculate())==(shunting.createExpression(params[3])->calculate()))){
+    if (((this->params[2]=="=")||(this->params[2]=="=="))&&((shunting->createExpression(this->params[1])->calculate())==(shunting->createExpression(params[3])->calculate()))){
         loop= false;
     }
-    if ((this->params[2]=="<=")&&((shunting.createExpression(this->params[1])->calculate()) > (shunting.createExpression(params[3])->calculate()))){
+    if ((this->params[2]=="<=")&&((shunting->createExpression(this->params[1])->calculate()) > (shunting->createExpression(params[3])->calculate()))){
         loop= false;
     }
-    if ((this->params[2]==">=")&&((shunting.createExpression(this->params[1])->calculate()) < (shunting.createExpression(params[2])->calculate()))){
+    if ((this->params[2]==">=")&&((shunting->createExpression(this->params[1])->calculate()) < (shunting->createExpression(params[2])->calculate()))){
         loop= false;
     }
     return loop;

@@ -19,33 +19,49 @@ extern bool connectedGame;
 Parser::Parser(vector<string> &strings){
     this->planeData = new PlaneData;
     this->strings = strings;
+    this->shunting = new Shunting(this->planeData);
     setTheTables();
 }
 //hey bro
 void Parser::setTheTables(){
     OpenServerCommand* openServerCommand = new OpenServerCommand();
     openServerCommand->setPlaneData(this->planeData);
+    openServerCommand->setShunting(this->shunting);
     this->expressionMap.insert(pair<string,CommandExpression*>("openDataServer", new CommandExpression(openServerCommand)));
     ConnectCommand* connectCommand = new ConnectCommand();
     connectCommand->setOpenClientSocket(new OpenClientSocket);
     connectCommand->setPlaneData(this->planeData);
+    connectCommand->setShunting(this->shunting);
     this->expressionMap.insert(pair<string,CommandExpression*>("connect", new CommandExpression(connectCommand)));
     DefineVarCommand* defineVarCommand = new DefineVarCommand();
     defineVarCommand->setPlaneData(this->planeData);
+    defineVarCommand->setShunting(this->shunting);
     this->expressionMap.insert(pair<string,CommandExpression*>("var", new CommandExpression(defineVarCommand)));
     EqualCommand* equalCommand = new EqualCommand();
     equalCommand->setPlaneData(this->planeData);
+    equalCommand->setShunting(this->shunting);
     this->expressionMap.insert(pair<string,CommandExpression*>("=", new CommandExpression(equalCommand)));
     ConditionParser* conditionParser= new ConditionParser();
     conditionParser->setPlaneData(this->planeData);
+    conditionParser->setShunting(this->shunting);
     conditionParser->setParser(this);
     conditionParser->setExpressionMap(this->expressionMap);
     this->expressionMap.insert(pair<string,CommandExpression*>("while", new CommandExpression(conditionParser)));
+
+    ConditionParser* conditionParserIf= new ConditionParser();
+    conditionParserIf->setPlaneData(this->planeData);
+    conditionParserIf->setShunting(this->shunting);
+    conditionParserIf->setParser(this);
+    conditionParserIf->setExpressionMap(this->expressionMap);
+    this->expressionMap.insert(pair<string,CommandExpression*>("if", new CommandExpression(conditionParser)));
+
     SleepCommand* sleepCommand= new SleepCommand();
     sleepCommand->setPlaneData(this->planeData);
+    sleepCommand->setShunting(this->shunting);
     this->expressionMap.insert(pair<string,CommandExpression*>("sleep", new CommandExpression(sleepCommand)));
     PrintCommand* printCommand= new PrintCommand();
     printCommand->setPlaneData(this->planeData);
+    printCommand->setShunting(this->shunting);
     this->expressionMap.insert(pair<string,CommandExpression*>("print", new CommandExpression(printCommand)));
 }
 
@@ -168,6 +184,7 @@ vector<string> Parser::IfWhileInterpret(vector<string> lines){
         returnStringVector.erase(returnStringVector.end()-1);
         returnStringVector.push_back(lastLine);
     }
+
     return returnStringVector;
 }
 
@@ -197,6 +214,7 @@ void Parser::startInterpret() {
     vector<string> returnStringVector;
     for (auto it = strings.begin(); it != strings.end(); ++it) {
         bufferedLine = *it;
+
         string firstWord = bufferedLine.substr(0, bufferedLine.find(" "));
 
         if(firstWord=="openDataServer") {
@@ -206,13 +224,15 @@ void Parser::startInterpret() {
             while (!connectedGame){
                                                         // waiting to be opened...
             }
+            cout << "Press Some Key When Engine Is On" << endl;
+            cin.ignore();
             returnStringVector = ConnectInterpret(*it);
             DoTheCommands(returnStringVector);
         } else if (firstWord=="var") {
             returnStringVector = VarInterpret(*it);
             DoTheCommands(returnStringVector);
         }
-        else if (firstWord=="while") {
+        else if (firstWord=="while" || firstWord=="if") {
             vector<string> lines;
             while (bufferedLine.find('}')==std::string::npos){  // while the line doesn't contains '}'
                 lines.push_back(bufferedLine);
@@ -223,15 +243,16 @@ void Parser::startInterpret() {
             returnStringVector = IfWhileInterpret(lines);
             DoTheCommands(returnStringVector);
         }
-        else if (firstWord=="if") {
-            // some det
-        } else if (firstWord=="print") {
+        else if (firstWord=="print") {
             returnStringVector = PrintInterpret(*it);
             DoTheCommands(returnStringVector);
         } else if (firstWord=="sleep") {
             returnStringVector = SleepInterpret(*it);
             DoTheCommands(returnStringVector);
-        } else {
+        } else if (firstWord=="exit"){
+            cout << "Bon Voyage!" << endl;
+        }
+        else {
             returnStringVector = EqualInterpret(*it);
             DoTheCommands(returnStringVector);
         }
@@ -244,4 +265,17 @@ void Parser::DoTheCommands(vector<string> strings){
     str = strings[0];
     expressionMap[str] -> SetParams(strings);
     expressionMap[str] -> calculate();
+}
+
+Parser::~Parser(){
+    delete this->planeData;
+    delete this->shunting;
+    delete expressionMap["openDataServer"];
+    delete expressionMap["connect"];
+    delete expressionMap["var"];
+    delete expressionMap["="];
+//    delete expressionMap["while"];
+    delete expressionMap["if"];
+    delete expressionMap["sleep"];
+    delete expressionMap["print"];
 }

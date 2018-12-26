@@ -12,6 +12,10 @@
 class Expression {
 public:
     virtual double calculate() const = 0;
+
+    virtual ~Expression() {
+
+    }
 //    virtual double calculate(vector<string> strings, PlaneData* planeData) const = 0;
 };
 

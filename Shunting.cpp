@@ -44,13 +44,29 @@ int Shunting::operationPriority(char operation) {
 Expression *Shunting::applyOp(Expression *val1, Expression *val2, char operation) {
     switch (operation) {
         case '*':
-            return new Mul(val1, val2);
+            {
+            Expression *mul = new Mul(val1, val2);
+            this->listOfNewExpressions.push_back(mul);
+            return mul;
+            }
         case '/':
-            return new Div(val1, val2);
+        {
+            Expression *div = new Div(val1, val2);
+            this->listOfNewExpressions.push_back(div);
+            return div;
+        }
         case '+':
-            return new Plus(val1, val2);
+        {
+            Expression *plus = new Plus(val1, val2);
+            this->listOfNewExpressions.push_back(plus);
+            return plus;
+        }
         case '-':
-            return new Minus(val1, val2);
+        {
+            Expression *minus = new Minus(val1, val2);
+            this->listOfNewExpressions.push_back(minus);
+            return minus;
+        }
         default:
             break;
     }
@@ -74,6 +90,16 @@ Expression *Shunting::createExpression(string tokens) {
     stack<Expression *> value;
     // stack to store operators.
     stack<char> operators;
+    bool minusBegin=false;
+    int j = 0;
+    while ( j < tokens.length()&&(tokens[j]==' ' ||tokens[j]=='-')) {
+        // Current token is an opening
+        // brace, push it to 'ops'
+        if (tokens[j] == '-') {
+            tokens=changeExpression(tokens,j);
+        }
+        j++;
+    }
     for (int i = 0; i < tokens.length(); i++) {
         // Current token is a whitespace,
         // skip it.
@@ -123,7 +149,9 @@ Expression *Shunting::createExpression(string tokens) {
             }
             i--;
             //push the number to the numbers' stack
-            value.push(new Number(temp));
+            Expression* num = new Number(temp);
+            this->listOfNewExpressions.push_back(num);
+            value.push(num);
             //ניסיון להמיר משתנים לערכם
 //        else if (isParam(tokens[i])) {
 //            Expression *num = new Number((symbolTableNameDouble[tokens[i]]));
@@ -169,13 +197,14 @@ Expression *Shunting::createExpression(string tokens) {
         } else {
             string variableName = "";
 //            minusOp = true;
-            while (operationPriority(tokens[i]) == 0 && i < tokens.length()) {
+            while (operationPriority(tokens[i]) == 0 && i < tokens.length() && tokens[i]!=')') {
                 if (tokens[i] != ' ') {
                     variableName += tokens[i];
                 }
                 i += 1;
             }
             Expression *variableValue = new Number(this->planeData->getValueByName(variableName));
+            this->listOfNewExpressions.push_back(variableValue);
             value.push(variableValue);
             i -= 1;
         }
@@ -196,4 +225,22 @@ Expression *Shunting::createExpression(string tokens) {
 
     // Top of 'values' contains result, return it.
     return value.top();
+}
+
+string Shunting::changeExpression(string tokens, int j) {
+    while ( j < tokens.length()&&(isdigit(tokens[j])||isalpha(tokens[j]))) {
+        j++;
+    }
+
+    string temp1="(0";
+    string temp2 = tokens.substr(0,j);
+    temp1 = temp1.append(temp2);
+    temp1 = temp1.append(")");
+    return temp1.append(tokens.substr(j,tokens.size()));
+}
+
+Shunting::~Shunting() {
+    for (auto const& i : this->listOfNewExpressions) {
+        delete i;
+    }
 }
